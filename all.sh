@@ -17,7 +17,6 @@ cat <<EOF | sudo tee -a /etc/hosts
     10.10.0.12 worker-2
 EOF
 log "==============================="
-echo "${INFO} ${NO}"
 sudo swapoff -a
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
 log "==============================="

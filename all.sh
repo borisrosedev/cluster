@@ -1,26 +1,9 @@
 #!/bin/bash
+source colors.sh
+source log.sh
+
+
 cat /etc/fstab
-
-INFO="\033[36;1m"
-OK="\033[32;1m"
-WARN="\033[33;1m"
-ERROR="\033[31;1m"
-FUN="\033[36;1m"
-NO="\033[m"
-
-log(){
-    if [ "$2" == "msg" ]; then
-        echo -e "${INFO}$1${NO}" 
-    elif [ "$2" == "ok" ]; then 
-        echo -e "${OK}$1${NO}" 
-    elif [ "$2" == "error" ]; then 
-        echo -e "${ERROR}$1${NO}" 
-    elif [ "$2" == "warn" ]; then 
-        echo -e "${WARN}$1${NO}" 
-    else
-        echo -e "${FUN}$1${NO}" 
-    fi
-}
 log "===============================" fun
 sudo hostnamectl set-hostname cp-01
 log "===============================" fun
@@ -52,3 +35,54 @@ net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward = 1
 EOF
 sudo sysctl --system
+
+log "===============================" fun
+log "4. Installation de containerd" msg
+sudo apt update && sudo apt install -y containerd
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+log "5. Activer le cgroup driver systemd" msg
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' \
+/etc/containerd/config.toml
+sudo systemctl restart containerd
+sudo systemctl enable containerd
+
+log "===============================" fun
+log "6. Version mineure de Kubernetes à installer (à adapter, voir kubernetes.io/releases)" msg
+K8S_MINOR=v1.36
+sudo apt-get update
+log "quatre paquets d’amorçage" warn
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+log "===============================" fun
+log "7.Clé du dépôt officiel Kubernetes" warn
+sudo mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/${K8S_MINOR}/deb/Release.key \
+| sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+
+log "===============================" fun
+log "8.Déclaration du dépôt" warn
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/${K8S_MINOR}/deb/ /" \
+| sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+
+log "==============UPDATE=================" fun
+sudo apt-get update
+log "==============K3=================" fun
+sudo apt-get install -y kubelet kubeadm kubectl
+log "===============================" fun
+log "9.Interdiction de la maj auto" warn
+sudo apt-mark hold kubelet kubeadm kubectl
+log "===============================" fun
+sudo systemctl enable --now kubelet
+
+
+log "===============================" fun
+log "7. Définission pour crictl. crictl du chemin vers le runtime " msg
+cat <<EOF | sudo tee /etc/crictl.yaml
+runtime-endpoint: unix:///run/containerd/containerd.sock
+EOF
+sudo crictl ps
+sudo crictl images

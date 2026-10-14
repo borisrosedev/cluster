@@ -2,10 +2,11 @@
 
 source log.sh
 
-log "===================FIREWALL HANDLING =====================================" fun
+log "===================FIREWALL HANDLING=====================================" fun
 
 result=$(sudo ufw status)
-is_active=$($result | grep ": actif")
+is_active=$(echo "$result" | grep ": actif")
+
 if [ -n "$is_active" ]; then
 	log "UFW: active" ok
 else
@@ -13,4 +14,4 @@ else
 fi
 
 
-log "================== END OF FIREWALL HANDLING ====================================="
+log "================== END OF FIREWALL HANDLING =====================================" fun

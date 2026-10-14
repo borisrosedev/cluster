@@ -1,4 +1,6 @@
 #!/bin/bash
+source colors.sh
+
 log(){
     if [ "$2" == "msg" ]; then
         echo -e "${INFO}$1${NO}"

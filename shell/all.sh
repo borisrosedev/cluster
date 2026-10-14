@@ -2,10 +2,6 @@
 source colors.sh
 source log.sh
 
-cat /etc/fstab
-log "===============================" fun
-sudo hostnamectl set-hostname $1
-
 
 log "===============================" fun
 log "# 0. Identité de la machine (cp-01, worker-1, worker-2)" msg

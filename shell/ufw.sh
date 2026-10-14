@@ -11,7 +11,7 @@ if [ -n "$is_active" ]; then
 	log "UFW: active" ok
 else
 	log "UFW: Inactive" error
-	log " 🚀 Activating Firewall ..."
+	log " 🚀 Activating Firewall ..."g
 fi
 
 

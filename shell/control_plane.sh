@@ -1,8 +1,14 @@
 #!/bin/bash
 source log.sh
 
+
 POD_NETWORK_CIDR=$(grep "^POD_NETWORK_CIDR=" .env | cut -d= -f2-)
 CONTROL_PLANE_IP_ADDRESS=$(grep "^CONTROL_PLANE_IP_ADDRESS=" .env | cut -d= -f2-)
+
+cat /etc/fstab
+log "===============================" fun
+sudo hostnamectl set-hostname cp-01
+
 
 log "================================================" fun
 log "Effectuons la commande kubeadm" msg

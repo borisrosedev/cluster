@@ -1,7 +1,6 @@
 #!/bin/bash
 source log.sh
 
-
 log "========================================================" fun
 log "Fichiers ouverts par les processus" info
 lsof -p 6443

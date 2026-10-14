@@ -77,5 +77,3 @@ log "9.Interdiction de la maj auto" warn
 sudo apt-mark hold kubelet kubeadm kubectl
 log "===============================" fun
 sudo systemctl enable --now kubelet
-
-

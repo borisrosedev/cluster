@@ -1,0 +1,13 @@
+# For all rules
+ignore: |
+  *.yaml
+
+rules:
+  key-duplicates:
+    ignore: |
+      generated
+      *.template.yaml
+  trailing-spaces:
+    ignore: |
+      *.ignore-trailing-spaces.yaml
+      /ascii-art/*

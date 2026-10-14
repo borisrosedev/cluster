@@ -1,0 +1,17 @@
+apiVersion: policies.kyverno.io/v1
+kind: NamespacedValidatingPolicy
+metadata:
+  name: check-deployment-replicas
+  namespace: production
+spec:
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['apps']
+        apiVersions: ['v1']
+        operations: [CREATE, UPDATE]
+        resources: ['deployments']
+  validations:
+    - message: 'deployments must have at least 2 replicas for high availability'
+      expression: 'object.spec.replicas >= 2'
